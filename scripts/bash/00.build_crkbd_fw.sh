@@ -19,11 +19,65 @@
 
 #!/bin/bash
 
-SIDE=$1   # left or right
-
 # Return value constants
 readonly E_OK=0
 readonly E_NOT_OK=1
+
+# Function to display help message
+show_help() {
+    cat << EOF
+Usage: $(basename "$0") [OPTIONS] [SIDE]
+
+Build ZMK firmware for Corne keyboard with nice!nano controller.
+
+Arguments:
+  left          Build left side firmware only
+  right         Build right side firmware only
+  reset         Build settings reset firmware only
+  (none)        Interactive mode - prompts to build both sides
+
+Options:
+  -h, --help    Display this help message and exit
+
+Examples:
+  $(basename "$0")              # Interactive mode - build both sides
+  $(basename "$0") left         # Build left side only
+  $(basename "$0") right        # Build right side only
+  $(basename "$0") reset        # Build settings reset firmware
+
+Output:
+  Firmware files are saved to the build/ directory:
+    - build/corne_left.uf2
+    - build/corne_right.uf2
+    - build/settings_reset.uf2
+
+Board: nice_nano (default revision 2.0.0)
+Shields: corne_left, corne_right, settings_reset
+
+Note: Make sure west workspace is initialized before running this script.
+      Run 'west init -l app/' and 'west update' if needed.
+EOF
+    exit $E_OK
+}
+
+# Check for help flag
+if [ "$1" = "-h" ] || [ "$1" = "--help" ]; then
+    show_help
+fi
+
+SIDE=$1   # left or right
+
+# Detect ZMK config path
+ZMK_CONFIG_PATH=""
+if [ -d "/workspaces/zmk/zmk-config/config" ]; then
+    ZMK_CONFIG_PATH="/workspaces/zmk/zmk-config/config"
+    echo "Using custom config from: ${ZMK_CONFIG_PATH}"
+elif [ -d "zmk-config/config" ]; then
+    ZMK_CONFIG_PATH="$(pwd)/zmk-config/config"
+    echo "Using custom config from: ${ZMK_CONFIG_PATH}"
+else
+    echo "No custom config found - using default configuration"
+fi
 
 # Function to format time in seconds to human readable format
 format_time() {
@@ -45,9 +99,14 @@ build_side() {
 
     echo "Building ${side} side..."
 
-    west build -s app/ -p -d build/corne_${side} -b nice_nano_v2 -- \
-        -DSHIELD=corne_${side} \
-        -DZMK_CONFIG=/workspaces/zmk/zmk-config/config
+    if [ -n "${ZMK_CONFIG_PATH}" ]; then
+        west build -s app/ -p -d build/corne_${side} -b nice_nano -- \
+            -DSHIELD=corne_${side} \
+            -DZMK_CONFIG="${ZMK_CONFIG_PATH}"
+    else
+        west build -s app/ -p -d build/corne_${side} -b nice_nano -- \
+            -DSHIELD=corne_${side}
+    fi
 
     local build_result=$?
     local end_time=$(date +%s)
@@ -77,9 +136,14 @@ build_settings_reset() {
 
     echo "Building settings reset firmware..."
 
-    west build -s app/ -p -d build/settings_reset -b nice_nano_v2 -- \
-        -DSHIELD=settings_reset \
-        -DZMK_CONFIG=/workspaces/zmk/zmk-config/config
+    if [ -n "${ZMK_CONFIG_PATH}" ]; then
+        west build -s app/ -p -d build/settings_reset -b nice_nano -- \
+            -DSHIELD=settings_reset \
+            -DZMK_CONFIG="${ZMK_CONFIG_PATH}"
+    else
+        west build -s app/ -p -d build/settings_reset -b nice_nano -- \
+            -DSHIELD=settings_reset
+    fi
 
     local build_result=$?
     local end_time=$(date +%s)
