@@ -69,8 +69,9 @@ SIDE=$1   # left or right
 
 # Detect ZMK config path
 ZMK_CONFIG_PATH=""
-if [ -d "/workspaces/zmk/zmk-config/config" ]; then
-    ZMK_CONFIG_PATH="/workspaces/zmk/zmk-config/config"
+
+if [ -d "/workspaces/zmk-config/config" ]; then
+    ZMK_CONFIG_PATH="/workspaces/zmk-config/config"
     echo "Using custom config from: ${ZMK_CONFIG_PATH}"
 elif [ -d "zmk-config/config" ]; then
     ZMK_CONFIG_PATH="$(pwd)/zmk-config/config"
