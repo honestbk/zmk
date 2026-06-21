@@ -17,3 +17,10 @@ __pycache__
 
 # clangd
 app/.cache/
+
+# Honestbk
+playground/
+output/
+templates/
+.markdownlint.yaml
+.prettierrc*
