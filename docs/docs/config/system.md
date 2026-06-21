@@ -13,11 +13,12 @@ Definition file: [zmk/app/Kconfig](https://github.com/zmkfirmware/zmk/blob/main/
 
 ### General
 
-| Config                      | Type   | Description                                  | Default |
-| --------------------------- | ------ | -------------------------------------------- | ------- |
-| `CONFIG_ZMK_KEYBOARD_NAME`  | string | The name of the keyboard (max 16 characters) |         |
-| `CONFIG_ZMK_WPM`            | bool   | Enable calculating words per minute          | n       |
-| `CONFIG_HEAP_MEM_POOL_SIZE` | int    | Size of the heap memory pool                 | 8192    |
+| Config                      | Type   | Description                                                                                                                                    | Default |
+| --------------------------- | ------ | ---------------------------------------------------------------------------------------------------------------------------------------------- | ------- |
+| `CONFIG_ZMK_BOARD_COMPAT`   | bool   | A special config for boards to enable. This helps check if users have accidentally used an upstream Zephyr board without ZMK additions applied | n       |
+| `CONFIG_ZMK_KEYBOARD_NAME`  | string | The name of the keyboard (max 16 characters)                                                                                                   |         |
+| `CONFIG_ZMK_WPM`            | bool   | Enable calculating words per minute                                                                                                            | n       |
+| `CONFIG_HEAP_MEM_POOL_SIZE` | int    | Size of the heap memory pool                                                                                                                   | 8192    |
 
 :::info
 
@@ -119,13 +120,6 @@ Note that `CONFIG_BT_MAX_CONN` and `CONFIG_BT_MAX_PAIRED` should be set to the s
 | ------------------------ | ---- | ---------------------------------------- | ------- |
 | `CONFIG_ZMK_USB_LOGGING` | bool | Enable USB CDC ACM logging for debugging | n       |
 | `CONFIG_ZMK_LOG_LEVEL`   | int  | Log level for ZMK debug messages         | 4       |
-
-### Double Tap To Bootloader
-
-| Config                                     | Type | Description                                                         | Default                     |
-| ------------------------------------------ | ---- | ------------------------------------------------------------------- | --------------------------- |
-| `CONFIG_ZMK_DBL_TAP_BOOTLOADER`            | bool | Enable the double-tap to enter bootloader functionality             | y if STM32 or RP2040/RP2350 |
-| `CONFIG_ZMK_DBL_TAP_BOOTLOADER_TIMEOUT_MS` | int  | Duration (in ms) to wait for a second reset to enter the bootloader | 500                         |
 
 ## Snippets
 
